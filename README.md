@@ -1,99 +1,79 @@
-<h1 align="center">SDK Node.js para APIs Efí Pay</h1>
+<h1 align="center">sdk-node-apis-efi-lambda - Fork of the Efí SDK Node.js, with less boilarplate, and to execute on AWS Lambda using serverless platform</h1>
 
-![Banner APIs Efí Pay](https://gnetbr.com/BJgSIUhlYs)
+<h2 align="center">This is not a SDK, it is a full example of how to call Efi Payment API
+
+<h2 align="center">Stack</h2>
+
+<p>axios implementation (inspired by Efí SDK node.js lib )</p>
+<p>aws lambda</p>
+<p>aws s3 (to store the file certificate)</p>
+<p>serverless platform to handle and upload the aws lambda</p>
+<p>lambda-api lib to create a small node api under the aws lambda using the event proxy</p>
 
 
-> Um módulo nodejs para integrar seu backend com os serviços de pagamento da [Efí](http://sejaefi.com.br).
 
-## Instalação
+## Config
 
-```bash
-$ npm install sdk-node-apis-efi
-```
+In serverless.yml
+Change YOUR_BUCKET to you AWS S3 Bucket Name:
+- "arn:aws:s3:::YOUR_BUCKET/*"
 
-## Uso Básico
-
-Importe o módulo:
-
-```js
-const EfiPay = require('sdk-node-apis-efi')
-```
-
-Insira suas credenciais e defina se deseja usar o sandbox ou não.
-Você também pode usar o arquivo [examples/credentials.js](examples/credentials.js) de modelo.
-
-```js
-module.exports = {
-	// PRODUÇÃO = false
-	// HOMOLOGAÇÃO = true
-	sandbox: false,
-	client_id: 'seuClientId',
-	client_secret: 'seuClientSecret',
-	certificate: 'caminho/Ate/O/Certificado/Pix',
-}
-```
-
-Instancie o módulo passando as options:
+Add your Efi credencials
+change certificate-name.p12 by your certificate name
 
 ```js
-const efipay = new EfiPay(options)
-```
 
-Crie uma cobrança:
-
-```js
-let chargeInput = {
-	items: [
-		{
-			name: 'Product A',
-			value: 1000,
-			amount: 2,
-		},
-	],
+//  On efiServices.js change the following parameters:
+const options = {
+    sandbox: false,
+    client_id: 'your_Client_Id',
+    client_secret: 'your_Client_Secret',
+    certificate: '/tmp/certificate-name.p12', // put your certificate name here
 }
 
-efipay.createCharge({}, chargeInput)
-	.then((resposta) => {
-		console.log(resposta)
-	})
-	.catch((error) => {
-		console.log(error)
-	})
-```
+// TODO: add your AWS credencials
+AWS.config.update({
+    "accessKeyId": "XYXYXYXYXYXYXYXYX",
+    "secretAccessKey": "XXXXXXXXXXXXXXXXXXXXXXX"
+})
 
-## Exemplos
+// don't forget to add the file cert on your own bucket
+const fileName = 'YOUR_FILE_CERTIFICATE_NAME_ON_AWS_S3_BUCKET' // TODO: CHANGE HERE
 
-Para executar os exemplos, clone este repo e instale as dependências:
-
-```bash
-$ git clone git@github.com:efipay/sdk-node-apis-efi.git
-$ cd sdk-node-apis-efi/examples
-$ npm install
-```
-
-Defina suas credenciais em credentials.js:
-
-```js
-module.exports = {
-	// PRODUÇÃO = false
-	// HOMOLOGAÇÃO = true
-	sandbox: false,
-	client_id: 'seuClientId',
-	client_secret: 'seuClientSecret',
-	certificate: 'caminhoAteOCertificadoPix',
+let params = {
+    Bucket: 'YOUR_BUCKET_SAME_NAME_IN_serverless.yml', // TODO: CHANGE HERE
+    Key:    fileName
 }
 ```
+The rest of the efiServices.js file is the normal api flow, like create a Pix charge with amount, expiration and so one.
 
-Em seguida, execute o exemplo que você deseja:
+## Deploy with Serverless platform
 
 ```bash
-$ node createCharge.js
+
+# dev
+$ sls deploy
+# tail logs
+$ sls logs -f service -t
+
+# prod
+$ sls deploy --stage prod --region us-east-1
+# tail logs
+$ sls logs -f service -t --stage prod --region us-east-1
 ```
 
-## Documentação
 
-A documentação completa com todos os endpoints disponíveis você encontra em: https://dev.sejaefi.com.br/.
+## Simple test
 
-## License
+Get the url returned by serverless / aws lambda 
+Example:
+https://xyxyxyxyxy.execute-api.us-east-1.amazonaws.com/prod/
+```js
 
-[MIT](LICENSE)
+# Add lambda api context (located on handler) and the api path (rest api using lambda-api), here "billing" is the context name, full example:
+https://xyxyxyxyxy.execute-api.us-east-1.amazonaws.com/prod/billing/efi
+```
+
+## Full Efí Docs
+https://dev.sejaefi.com.br/.
+

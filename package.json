@@ -1,38 +1,31 @@
 {
-	"name": "sdk-node-apis-efi",
-	"description": "Module for integration with Efi Bank API",
-	"version": "1.1.2",
-	"author": "Efi Bank - Consultoria Tecnica | João Vitor Oliveira",
-	"license": "MIT",
-	"repository": "efipay/sdk-node-apis-efi",
-	"homepage": "https://github.com/efipay/sdk-node-apis-efi",
-	"keywords": [
-		"efi",
-		"efi pay",
-		"efi bank",
-		"pagamentos",
-		"payment",
-		"sdk",
-		"integração",
-		"integration",
-		"api",
-		"bank slip",
-		"boleto bancario",
-		"credit card",
-		"cartao de credito",
-		"pix",
-		"Open Finance"
-	],
-	"dependencies": {
-		"axios": "^1.2.2",
-		"randomstring": "^1.2.2"
-	},
+	"name": "sdk-node-apis-efi-lambda",
+	"description": "Fork of the Efí SDK Node.js, with less boilarplate, and to execute on AWS Lambda using serverless platform",
+	"version": "0.0.1",
+	"main": "handler.js",
 	"scripts": {
-		"start": "node app.js",
-		"test": "./node_modules/.bin/jest",
-		"test-cov": "./node_modules/.bin/jest --coverage"
+		"deploy": "serverless deploy",
+		"logs": "serverless logs -f parser -t"
+	},
+	"author": "Luiz Couto <luiz@couto.co>",
+	"license": "UNLICENSED",
+	"dependencies": {
+		"aws-sdk": "^2.451.0",
+		"axios": "^0.18.0",
+		"babel-runtime": "^6.26.0",
+		"lambda-api": "^0.10.5"
 	},
 	"devDependencies": {
-		"prettier": "^3.0.3"
+		"babel-core": "^6.26.3",
+		"babel-loader": "^7.1.4",
+		"babel-plugin-source-map-support": "^1.0.0",
+		"babel-plugin-transform-runtime": "^6.23.0",
+		"babel-preset-env": "^1.7.0",
+		"babel-preset-stage-3": "^6.24.1",
+		"serverless-offline": "^8.3.1",
+		"serverless-stage-manager": "^1.0.5",
+		"serverless-webpack": "^5.1.0",
+		"webpack": "^4.16.2",
+		"webpack-node-externals": "^1.6.0"
 	}
 }

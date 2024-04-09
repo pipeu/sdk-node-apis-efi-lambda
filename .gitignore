@@ -1,8 +1,4 @@
 node_modules/
-.tmp/
-npm-debug.log
-coverage/
 .idea/
-*.p12
-examples/open-accounts/
-examples/pix/split/
+.serverless/
+.webpack
